@@ -66,12 +66,9 @@ function! s:persist() abort
   if exists('g:SessionLoad')
     return ''
   endif
-  let sessionoptions = &sessionoptions
   if exists('g:this_obsession')
     let tmp = g:this_obsession . '.' . getpid() . '.obsession~'
     try
-      set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
-      exe s:doautocmd_user('ObsessionPre')
       execute 'mksession!' fnameescape(tmp)
       let body = readfile(tmp)
       call insert(body, 'let g:this_session = v:this_session', -3)
@@ -92,7 +89,6 @@ function! s:persist() abort
       let &l:readonly = &l:readonly
       return 'echoerr '.string(v:exception)
     finally
-      let &sessionoptions = sessionoptions
       call delete(tmp)
     endtry
   endif
